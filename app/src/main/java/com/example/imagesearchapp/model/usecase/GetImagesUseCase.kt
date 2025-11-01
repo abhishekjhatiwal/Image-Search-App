@@ -1,4 +1,4 @@
-package com.example.imagesearchapp.model
+package com.example.imagesearchapp.model.usecase
 
 import com.example.imagesearchapp.repository.ImageRepository
 import javax.inject.Inject
