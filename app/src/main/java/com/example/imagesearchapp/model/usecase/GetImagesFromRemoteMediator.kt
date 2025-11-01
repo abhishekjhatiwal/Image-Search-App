@@ -6,5 +6,5 @@ import javax.inject.Inject
 class GetImagesFromRemoteMediator @Inject constructor(
     private val imageRepository: ImageRepository
 ) {
-     /* override*/ fun invoke(q: String) = imageRepository.getRemoteMediatorImages(q)
+    /* override*/ fun invoke(q: String) = imageRepository.getRemoteMediatorImages(q)
 }

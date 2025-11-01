@@ -16,8 +16,7 @@ abstract class AppDatabase : RoomDatabase() {
             Room.databaseBuilder(context, AppDatabase::class.java, "app.db").build()
     }
 
-    abstract fun getImageDao() : ImageDao
+    abstract fun getImageDao(): ImageDao
 
     abstract fun getRemoteKeyDao(): RemoteKeyDao
-
 }

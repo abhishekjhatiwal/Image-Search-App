@@ -5,7 +5,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import androidx.room.util.query
 import com.example.imagesearchapp.data.ApiService
 import com.example.imagesearchapp.data.local.ImageDao
 import com.example.imagesearchapp.data.local.RemoteKeyDao
@@ -63,7 +62,7 @@ class ImageRepoImpl @Inject constructor(
                 remoteKeyDao = remoteKeyDao,
                 apiService = apiService
             )
-        ).flow.map {
+        ).flow.map { it ->
             it.map {
                 imageEntityToImageMapper.map(it)
             }

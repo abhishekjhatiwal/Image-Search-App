@@ -36,7 +36,7 @@ class ImageRemoteMediator(
     ): MediatorResult {
         val page = when (loadType) {
             LoadType.REFRESH -> {
-                val remoteKey = state.anchorPosition?.let {
+                val remoteKey = state.anchorPosition?.let { it ->
                     state.closestItemToPosition(it)?.let {
                         remoteKeyDao.getRemoteKey(it.id)
                     }
@@ -45,7 +45,7 @@ class ImageRemoteMediator(
             }
 
             LoadType.PREPEND -> {
-                val remoteKey = state.pages?.firstOrNull {
+                val remoteKey = state.pages.firstOrNull {
                     it.data.isNotEmpty()
                 }?.data?.firstOrNull()?.let {
                     remoteKeyDao.getRemoteKey(it.id)
@@ -54,7 +54,7 @@ class ImageRemoteMediator(
             }
 
             LoadType.APPEND -> {
-                val remoteKey = state.pages?.lastOrNull {
+                val remoteKey = state.pages.lastOrNull {
                     it.data.isNotEmpty()
                 }?.data?.lastOrNull()?.let {
                     remoteKeyDao.getRemoteKey(it.id)
