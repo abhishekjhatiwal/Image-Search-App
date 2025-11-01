@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     kotlin("kapt")
+    id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
 
 }
@@ -104,4 +105,6 @@ dependencies {
     implementation("androidx.room:room-runtime:2.8.3")
     kapt("androidx.room:room-compiler:2.8.3")
     implementation("androidx.room:room-ktx:2.8.3")
+    implementation("androidx.room:room-paging:2.8.3")
+    implementation("androidx.paging:paging-runtime:3.3.6")
 }

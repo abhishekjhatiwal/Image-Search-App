@@ -1,11 +1,13 @@
 package com.example.imagesearchapp.data.local
 
 import androidx.paging.PagingSource
+import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.imagesearchapp.model.local.ImageEntity
 
+@Dao
 interface ImageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(list: List<ImageEntity>)
