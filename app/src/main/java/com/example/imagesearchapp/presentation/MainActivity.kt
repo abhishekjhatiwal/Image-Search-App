@@ -7,7 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -99,10 +99,10 @@ fun MainContent(modifier: Modifier = Modifier, viewModel: MainViewModel) {
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(4.dp)
                 ) {
-                    items(
-                        images.itemCount,
-                        key = { index -> images[index]?.uuid ?: index }) { index ->
-                        val image = images[index]
+                    // ✅ FIX: unique key using both id + index
+                    itemsIndexed(images.itemSnapshotList.items, key = { index, image ->
+                        "${image?.id}_${index}"
+                    }) { _, image ->
                         if (image != null) {
                             AsyncImage(
                                 model = image.imageUri,
@@ -116,7 +116,7 @@ fun MainContent(modifier: Modifier = Modifier, viewModel: MainViewModel) {
                         }
                     }
 
-                    // Append loading indicator
+                    // Loading more items
                     if (images.loadState.append is LoadState.Loading) {
                         item {
                             Box(
@@ -130,7 +130,7 @@ fun MainContent(modifier: Modifier = Modifier, viewModel: MainViewModel) {
                         }
                     }
 
-                    // Append error handler
+                    // Append error handling
                     if (images.loadState.append is LoadState.Error) {
                         item {
                             Box(
