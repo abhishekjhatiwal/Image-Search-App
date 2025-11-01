@@ -5,6 +5,7 @@ import com.example.imagesearchapp.data.ApiService
 import com.example.imagesearchapp.data.local.ImageDao
 import com.example.imagesearchapp.data.local.RemoteKeyDao
 import com.example.imagesearchapp.data.maper.ImageDTOtoImageMapper
+import com.example.imagesearchapp.data.maper.ImageEntityToImageMapper
 import com.example.imagesearchapp.data.repository.ImageRepoImpl
 import com.example.imagesearchapp.presentation.AppDatabase
 import com.example.imagesearchapp.repository.ImageRepository
@@ -35,9 +36,17 @@ object DataModule {
     @Provides
     fun provideImageRepository(
         apiService: ApiService,
-        mapper: ImageDTOtoImageMapper
+        mapper: ImageDTOtoImageMapper,
+        imageDao: ImageDao,
+        remoteKeyDao: RemoteKeyDao,
+        imageEntityToImageMapper: ImageEntityToImageMapper
     ): ImageRepository {
-        return ImageRepoImpl(apiService, mapper)
+        return ImageRepoImpl(
+            apiService, mapper,
+            imageDao = imageDao,
+            remoteKeyDao = remoteKeyDao,
+            imageEntityToImageMapper = imageEntityToImageMapper
+        )
     }
 
     @Provides
@@ -45,14 +54,15 @@ object DataModule {
     fun provideAppDatabase(@ApplicationContext appContext: Context): AppDatabase {
         return AppDatabase.getInstance(context = appContext)
     }
+
     @Provides
-    fun provideImageDao(appDatabase: AppDatabase) : ImageDao{
+    fun provideImageDao(appDatabase: AppDatabase): ImageDao {
         return appDatabase.getImageDao()
     }
 
     @Singleton
     @Provides
-    fun provideRemoteKeyDao(appDatabase: AppDatabase) : RemoteKeyDao {
+    fun provideRemoteKeyDao(appDatabase: AppDatabase): RemoteKeyDao {
         return appDatabase.getRemoteKeyDao()
     }
 

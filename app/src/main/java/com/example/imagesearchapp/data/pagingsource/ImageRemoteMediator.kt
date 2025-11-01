@@ -22,7 +22,12 @@ class ImageRemoteMediator(
     val mapper = ImageDTOtoImageEntityMapper(query)
 
     override suspend fun initialize(): InitializeAction {
-        return super.initialize()
+        val hasLocalData = imageDao.getcountCorrespondingToQuery(query) > 0
+        return if (hasLocalData) {
+            InitializeAction.SKIP_INITIAL_REFRESH
+        } else {
+            InitializeAction.LAUNCH_INITIAL_REFRESH
+        }
     }
 
     override suspend fun load(
@@ -57,6 +62,11 @@ class ImageRemoteMediator(
                 remoteKey?.nextKey ?: return MediatorResult.Success(remoteKey != null)
             }
         }
+
+        if (imageDao.getcountCorrespondingToQuery(query) > page.times(state.config.pageSize)) {
+            return MediatorResult.Success(endOfPaginationReached = true)
+        }
+
         return try {
             val response = apiService.getImages(q = query, page = page)
             val remoteImages = response.hits.distinctBy { it.id }
