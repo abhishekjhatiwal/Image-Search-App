@@ -65,5 +65,4 @@ object DataModule {
     fun provideRemoteKeyDao(appDatabase: AppDatabase): RemoteKeyDao {
         return appDatabase.getRemoteKeyDao()
     }
-
 }

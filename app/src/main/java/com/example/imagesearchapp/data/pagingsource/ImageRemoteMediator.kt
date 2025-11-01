@@ -22,7 +22,7 @@ class ImageRemoteMediator(
     val mapper = ImageDTOtoImageEntityMapper(query)
 
     override suspend fun initialize(): InitializeAction {
-        val hasLocalData = imageDao.getcountCorrespondingToQuery(query) > 0
+        val hasLocalData = imageDao.getCountCorrespondingToQuery(query) > 0
         return if (hasLocalData) {
             InitializeAction.SKIP_INITIAL_REFRESH
         } else {
@@ -63,7 +63,7 @@ class ImageRemoteMediator(
             }
         }
 
-        if (imageDao.getcountCorrespondingToQuery(query) > page.times(state.config.pageSize)) {
+        if (imageDao.getCountCorrespondingToQuery(query) > page.times(state.config.pageSize)) {
             return MediatorResult.Success(endOfPaginationReached = true)
         }
 

@@ -7,13 +7,35 @@ import androidx.room.Query
 import com.example.imagesearchapp.model.local.RemoteKey
 
 @Dao
-class RemoteKeyDao {
+interface RemoteKeyDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(list: List<RemoteKey>)
 
-    @Query("SELECT * FROM REMOTEKEY WHERE `id`=:id`")
+    @Query("SELECT * FROM REMOTEKEY WHERE id = :id")
     suspend fun getRemoteKey(id: String): RemoteKey?
 
-    @Query("DELETE FROM REMOTEKEY WHERE `query`=:q")
+    @Query("DELETE FROM REMOTEKEY WHERE query = :q")
     suspend fun deleteRemoteKeyQuery(q: String)
 }
+
+
+
+
+
+
+
+
+
+
+
+//@Dao
+//class RemoteKeyDao {
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
+//    suspend fun insertAll(list: List<RemoteKey>)
+//
+//    @Query("SELECT * FROM REMOTEKEY WHERE id =:id")
+//    suspend fun getRemoteKey(id: String): RemoteKey?
+//
+//    @Query("DELETE FROM REMOTEKEY WHERE `query`=:q")
+//    suspend fun deleteRemoteKeyQuery(q: String)
+//}

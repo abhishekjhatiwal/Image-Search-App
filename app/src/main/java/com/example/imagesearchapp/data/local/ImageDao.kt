@@ -17,5 +17,5 @@ interface ImageDao {
     suspend fun nukeTable(q: String)
 
     @Query("SELECT COUNT(*) FROM IMAGEENTITY WHERE `query`=:q")
-    suspend fun getcountCorrespondingToQuery(q: String): Int
+    suspend fun getCountCorrespondingToQuery(q: String): Int
 }
