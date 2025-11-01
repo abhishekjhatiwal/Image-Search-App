@@ -99,4 +99,9 @@ dependencies {
 
     // Dependency for the AsyncImage composable
     implementation("io.coil-kt:coil-compose:${coilVersion}")
+
+    //Room Database
+    implementation("androidx.room:room-runtime:2.8.3")
+    kapt("androidx.room:room-compiler:2.8.3")
+    implementation("androidx.room:room-ktx:2.8.3")
 }

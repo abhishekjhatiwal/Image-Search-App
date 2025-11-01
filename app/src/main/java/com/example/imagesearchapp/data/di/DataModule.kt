@@ -1,15 +1,21 @@
 package com.example.imagesearchapp.data.di
 
+import android.content.Context
 import com.example.imagesearchapp.data.ApiService
+import com.example.imagesearchapp.data.local.ImageDao
+import com.example.imagesearchapp.data.local.RemoteKeyDao
 import com.example.imagesearchapp.data.maper.ImageDTOtoImageMapper
 import com.example.imagesearchapp.data.repository.ImageRepoImpl
+import com.example.imagesearchapp.presentation.AppDatabase
 import com.example.imagesearchapp.repository.ImageRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -33,4 +39,21 @@ object DataModule {
     ): ImageRepository {
         return ImageRepoImpl(apiService, mapper)
     }
+
+    @Provides
+    @Singleton
+    fun provideAppDatabase(@ApplicationContext appContext: Context): AppDatabase {
+        return AppDatabase.getInstance(context = appContext)
+    }
+    @Provides
+    fun provideImageDao(appDatabase: AppDatabase) : ImageDao{
+        return appDatabase.getImageDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideRemoteKeyDao(appDatabase: AppDatabase) : RemoteKeyDao {
+        return appDatabase.getRemoteKeyDao()
+    }
+
 }
