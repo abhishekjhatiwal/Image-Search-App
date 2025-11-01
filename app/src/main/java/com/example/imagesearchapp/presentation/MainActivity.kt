@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -17,8 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemContentType
-import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
 import com.example.imagesearchapp.presentation.theme.ImageSearchAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -44,7 +43,8 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(8.dp),
-                            label = { Text("Search images...") }
+                            label = { Text("Search images...") },
+                            singleLine = true
                         )
                     },
                     modifier = Modifier.fillMaxSize()
@@ -63,21 +63,23 @@ class MainActivity : ComponentActivity() {
 fun MainContent(modifier: Modifier = Modifier, viewModel: MainViewModel) {
     val images = viewModel.images.collectAsLazyPagingItems()
 
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(4.dp)
+    ) {
         when {
             images.loadState.refresh is LoadState.Loading -> {
-                // Initial loading
                 CircularProgressIndicator(Modifier.align(Alignment.Center))
             }
 
             images.loadState.refresh is LoadState.Error -> {
-                // Error state
+                val error = (images.loadState.refresh as LoadState.Error).error
                 Column(
                     modifier = Modifier.align(Alignment.Center),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text("Something went wrong")
-                    Spacer(Modifier.height(8.dp))
+                    Text("Error: ${error.localizedMessage ?: "Unknown error"}")
                     Button(onClick = { images.retry() }) {
                         Text("Retry")
                     }
@@ -85,47 +87,42 @@ fun MainContent(modifier: Modifier = Modifier, viewModel: MainViewModel) {
             }
 
             images.itemCount == 0 -> {
-                // No results
                 Text(
-                    "Nothing Found",
+                    text = "Nothing Found",
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
 
             else -> {
-                // Grid content
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(4.dp)
                 ) {
                     items(
-                        count = images.itemCount,
-                        key = images.itemKey { image ->
-                            // ensure unique key by combining unique fields
-                            "${image.uuid}_${image.hashCode()}"
-                        },
-                        contentType = images.itemContentType { "contenttype" }
-                    ) { index ->
+                        images.itemCount,
+                        key = { index -> images[index]?.uuid ?: index }) { index ->
                         val image = images[index]
-                        AsyncImage(
-                            model = image,
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .fillMaxWidth()
-                                .height(200.dp)
-                        )
+                        if (image != null) {
+                            AsyncImage(
+                                model = image.imageUri,
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .padding(4.dp)
+                                    .fillMaxWidth()
+                                    .height(200.dp)
+                            )
+                        }
                     }
 
-                    // Append loading
+                    // Append loading indicator
                     if (images.loadState.append is LoadState.Loading) {
                         item {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(16.dp),
+                                    .height(100.dp),
                                 contentAlignment = Alignment.Center
                             ) {
                                 CircularProgressIndicator()
@@ -133,13 +130,13 @@ fun MainContent(modifier: Modifier = Modifier, viewModel: MainViewModel) {
                         }
                     }
 
-                    // Append error
+                    // Append error handler
                     if (images.loadState.append is LoadState.Error) {
                         item {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(16.dp),
+                                    .height(100.dp),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Button(onClick = { images.retry() }) {
@@ -153,35 +150,6 @@ fun MainContent(modifier: Modifier = Modifier, viewModel: MainViewModel) {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /*

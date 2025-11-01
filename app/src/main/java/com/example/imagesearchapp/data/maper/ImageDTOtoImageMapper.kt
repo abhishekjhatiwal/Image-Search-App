@@ -8,7 +8,7 @@ class ImageDTOtoImageMapper @Inject constructor() : Mapper<ImageDTO, Image> {
     override fun map(from: ImageDTO): Image {
         return Image(
             id = from.id.toString(),
-            imageUri = from.largeImageURL,
+            imageUri = from.webformatURL,
             uuid = from.user_id.toString()
         )
     }
